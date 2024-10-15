@@ -1,20 +1,15 @@
 from transformers import BertTokenizer, TFBertForSequenceClassification
 import tensorflow as tf
 
-def bert_predict(datas):
+def bert_predict(datas, model):
     """
     Produit des prédictions classifiées de Bert
 
     Parameters:
     datas: le dataset texte
+    model: le modèle bert à utiliser
     """
-
-    model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
-    tokenizer = BertTokenizer.from_pretrained(model_name)
-    tokenized_datas = list(map(lambda x: tokenizer(x, return_tensors="tf"), datas))
-    model = TFBertForSequenceClassification.from_pretrained(model_name)
-
-    outputs = model(tokenized_datas)
+    outputs = model(datas)
     logits = outputs.logits
 
     probabilities = tf.nn.softmax(logits, axis=-1)
@@ -41,4 +36,11 @@ def process_transform_text(texts):
     Applique toutes les démarches de prédictions : pré-traitements des texts, et ensuite pour chaque texte, une prédiction de sentiment positif ou négatif
     puis retourne le tout dans une liste
     """
-    return list(map(lambda x: bert_binaire_classifier(bert_predict(x)), texts))
+
+    model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
+    tokenizer = BertTokenizer.from_pretrained(model_name)
+    datas = list(map(lambda x: tokenizer(x, return_tensors="tf"), texts))
+
+    transformer = TFBertForSequenceClassification.from_pretrained(model_name)
+
+    return list(map(lambda x: bert_binaire_classifier(bert_predict(x, transformer)), datas))
