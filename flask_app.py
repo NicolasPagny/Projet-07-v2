@@ -33,7 +33,7 @@ tracer = trace.get_tracer(__name__)
 # Simple Hello world pour vérifier si le déploiement automatiquement a bien mis à jour la nouvelle version
 @app.route('/')
 def hello_world():
-    return 'Hello from Flask! Reload v2!'
+    return 'Hello from Flask! Reload v3!'
 
 # Api de prédiction
 @app.route("/predict", methods=["GET"])
