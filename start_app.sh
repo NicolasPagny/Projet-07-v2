@@ -7,9 +7,6 @@ pkill -f gunicorn
 #Sleep
 sleep 5
  
-#Go in the good directory
-cd /home/nicolaspagny/projet07v4
-
 # Activer l'environnement virtuel
 echo "Activation de l'environnement virtuel..."
 source .venv/bin/activate
