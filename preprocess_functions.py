@@ -11,10 +11,10 @@ def bert_predict(datas):
 
     model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
     tokenizer = BertTokenizer.from_pretrained(model_name)
-    datas = list(map(lambda x: tokenizer(x, return_tensors="tf"), datas))
+    tokenized_datas = list(map(lambda x: tokenizer(x, return_tensors="tf"), datas))
     model = TFBertForSequenceClassification.from_pretrained(model_name)
 
-    outputs = model(datas)
+    outputs = model(tokenized_datas)
     logits = outputs.logits
 
     probabilities = tf.nn.softmax(logits, axis=-1)
