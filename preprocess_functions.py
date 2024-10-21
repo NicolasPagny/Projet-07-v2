@@ -1,49 +1,43 @@
-from transformers import BertTokenizer, TFBertForSequenceClassification
-import tensorflow as tf
+from transformers import BertTokenizer, BertForSequenceClassification
+import torch
+from torch.nn.functional import softmax
 
 def bert_predict(datas, model):
     """
     Produit des prédictions classifiées de Bert
 
     Parameters:
-    datas: le dataset texte
-    model: le modèle bert à utiliser
+    datas: le dataset texte sous forme de tenseurs PyTorch
+    model: le modèle BERT à utiliser
     """
-    outputs = model(datas)
-    logits = outputs.logits
+    # Ne pas calculer les gradients pour la prédiction
+    with torch.no_grad():
+        # Obtenir les logits du modèle
+        outputs = model(**datas)
+        logits = outputs.logits
 
-    probabilities = tf.nn.softmax(logits, axis=-1)
-    prediction = tf.argmax(probabilities, axis=1).numpy()[0]
+    # Calculer les probabilités
+    probabilities = softmax(logits, dim=-1)
+
+    # Obtenir la prédiction
+    prediction = torch.argmax(probabilities, dim=1).numpy()
 
     return prediction
 
-def bert_binaire_classifier(prediction):
-    """
-    le modèle pré-entraîné "nlptown/bert-base-multilingual-uncased-sentiment" produit des prédictions
-    à 5 classes : 0 1 des sentiments négatifs, 2 neutre, 3 et 4 positifs
-    l'application n'utilise qu'une prédiction binaire, alors j'ajoute une couche de classification basée sur des conditions simples :
-    si 2 ou 3 ou 4 alors sentiments positifs sinon sentiments négatifs 
-    """
-
-    binary_prediction = 0
-    if prediction in [2, 3, 4]:
-        binary_prediction = 1
-    
-    return binary_prediction
-
 def process_transform_text(texts):
     """
-    Applique toutes les démarches de prédictions : pré-traitements des texts, et ensuite pour chaque texte, une prédiction de sentiment positif ou négatif
-    puis retourne le tout dans une liste
+    Applique toutes les démarches de prédictions : pré-traitements des textes,
+    et ensuite pour chaque texte, une prédiction de sentiment positif ou négatif,
+    puis retourne le tout dans une liste.
     """
     # Charger le modèle et le tokenizer
     model = BertForSequenceClassification.from_pretrained("nicolaspagny/bert-analyse-sentiment-projet07")
     tokenizer = BertTokenizer.from_pretrained("nicolaspagny/bert-analyse-sentiment-projet07")
 
-    model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
-    tokenizer = BertTokenizer.from_pretrained(model_name)
-    datas = list(map(lambda x: tokenizer(x, return_tensors="tf"), texts))
+    # Tokenisation des textes
+    datas = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
 
-    transformer = TFBertForSequenceClassification.from_pretrained(model_name)
-
-    return list(map(lambda x: bert_binaire_classifier(bert_predict(x, transformer)), datas))
+    # Effectuer les prédictions
+    predictions = bert_predict(datas, model)
+    
+    return predictions.tolist()  # Retourner les prédictions sous forme de liste
