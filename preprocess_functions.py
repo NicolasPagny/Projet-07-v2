@@ -36,6 +36,9 @@ def process_transform_text(texts):
     Applique toutes les démarches de prédictions : pré-traitements des texts, et ensuite pour chaque texte, une prédiction de sentiment positif ou négatif
     puis retourne le tout dans une liste
     """
+    # Charger le modèle et le tokenizer
+    model = BertForSequenceClassification.from_pretrained("nicolaspagny/bert-analyse-sentiment-projet07")
+    tokenizer = BertTokenizer.from_pretrained("nicolaspagny/bert-analyse-sentiment-projet07")
 
     model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
     tokenizer = BertTokenizer.from_pretrained(model_name)
