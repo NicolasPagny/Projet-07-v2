@@ -25,16 +25,15 @@ python -m venv .venv
 
 ## ajouter les lignes ci-dessous en fin du fichier .venv/bin/activate :
 
-!!! Ne pas modifier ces lignes !!!
+### copier et coller (ne pas modifier)
 export FLASK_APP="flask_app"
 export FLASK_RUN_PORT="5000"
 
-!!! Ligne à modifier !!!
-export API_TOKEN="XXX" où XXX correspond au secret de github
-
+### connection string pour Azure Insights
 export APPLICATIONINSIGHTS_CONNECTION_STRING="XXX" correspond à la connection string de Azure Insights 
 [voir la doc pour la connection string](https://learn.microsoft.com/en-us/azure/azure-monitor/app/connection-strings)
 
 
-## token pour pouvoir effectuer le déploiement et le rédémérrage du serveur l'api token est également à renseigner dans "secrets" de github avec le nom "API_TOKEN_DEPLOY"
+### API_TOKEN 
 export API_TOKEN="XXX"
+l'API Token pour pouvoir effectuer le déploiement et le rédémérrage du serveur l'api token est également à renseigner dans "secrets" de github avec le nom API_TOKEN_DEPLOY"
