@@ -48,7 +48,7 @@ def predict():
 def deploy():
     check_authorizerd()
     try:
-        subprocess.run(["bash", "deploy.sh"], check=True, capture_output=True, text=True)
+        subprocess.run(["bash", "scripts/deploy.sh"], check=True, capture_output=True, text=True)
         return jsonify({"message": "deploiement succes"}), 200
     except subprocess.CalledProcessError as e:
         return jsonify({"message": "" ,"error": e.stderr}), 200
@@ -62,7 +62,7 @@ def restart_gunicorn():
         log_file = open("gunicorn_restart.log", "a")
         
         # Exécuter le script en arrière-plan en redirigeant la sortie
-        subprocess.Popen(["bash", "start_app.sh"], stdout=log_file, stderr=log_file)
+        subprocess.Popen(["bash", "scripts/start_app.sh"], stdout=log_file, stderr=log_file)
         
         return jsonify({"message": "Le redémarrage de Gunicorn a été lancé."}), 200
     except Exception as e:

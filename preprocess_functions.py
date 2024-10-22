@@ -10,6 +10,7 @@ def bert_predict(datas, model):
     datas: le dataset texte sous forme de tenseurs PyTorch
     model: le modèle BERT à utiliser
     """
+    
     # Ne pas calculer les gradients pour la prédiction
     with torch.no_grad():
         # Obtenir les logits du modèle

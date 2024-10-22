@@ -1,6 +1,11 @@
+# packages utilisés pour exploiter Bert
 transformers==4.45.0
 torch==2.5.0
+
+# package utilisé pour l'API
 flask==3.0.3
+
+# package utilisés pour le tracing avec Azure insights
 azure-monitor-opentelemetry==1.6.2
 opentelemetry-api==1.27.0
 opentelemetry-sdk==1.27.0
